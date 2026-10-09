@@ -67,6 +67,14 @@ npm.cmd run desk
 
 It starts with a compact, numbered Inbox list and offers guided Inbox refresh, live search, message reading, archive, trash, mark-read, and compose actions. Reading and searching do not change any message. Archive and Trash ask for confirmation; sending asks for confirmation and uses the same irreversible-action safeguards as the command-line wrapper.
 
+For one-click use, double-click `Launch Proton Mail Desk.cmd` in the repository root. To create a Desktop shortcut that you can pin, run this once:
+
+```powershell
+.\scripts\Install-ProtonMailDeskShortcut.ps1
+```
+
+Then right-click **Proton Mail Desk** on your Desktop and choose **Pin to taskbar**.
+
 ## Maintenance
 
 ```powershell
