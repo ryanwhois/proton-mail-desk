@@ -13,6 +13,7 @@
     "check:powershell": "pwsh -NoLogo -NoProfile -Command \"Get-ChildItem scripts -Filter *.ps1 | ForEach-Object { [void][scriptblock]::Create((Get-Content -Raw -LiteralPath $_.FullName)) }; Write-Host 'PowerShell syntax OK'\"",
     "doctor": "pwsh -NoLogo -NoProfile -File scripts/Invoke-ProtonMail.ps1 doctor --json",
     "inbox": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonMail.ps1",
+    "desk": "pwsh -NoLogo -NoProfile -File scripts/Start-ProtonMailDesk.ps1",
     "mcp": "pwsh -NoLogo -NoProfile -File scripts/Start-ProtonMcp.ps1"
   }
 }

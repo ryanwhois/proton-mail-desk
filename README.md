@@ -57,6 +57,16 @@ npm.cmd run mcp
 
 Point a supported MCP desktop client at the command above. The MCP process inherits the same encrypted local profile and full-access policy. Do not expose this MCP server on a network or public endpoint.
 
+## Mail Desk: an interactive daily workflow
+
+For a more approachable view than raw command output, launch the local terminal desk:
+
+```powershell
+npm.cmd run desk
+```
+
+It starts with a compact, numbered Inbox list and offers guided Inbox refresh, live search, message reading, archive, trash, mark-read, and compose actions. Reading and searching do not change any message. Archive and Trash ask for confirmation; sending asks for confirmation and uses the same irreversible-action safeguards as the command-line wrapper.
+
 ## Maintenance
 
 ```powershell
