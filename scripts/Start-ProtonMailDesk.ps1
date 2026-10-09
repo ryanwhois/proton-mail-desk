@@ -26,23 +26,54 @@ function Get-AddressText {
     return (($Addresses | ForEach-Object { if ($_.name) { "{0} <{1}>" -f $_.name, $_.address } else { $_.address } }) -join '; ')
 }
 
+function Get-DeskWidth {
+    try { $width = $Host.UI.RawUI.WindowSize.Width } catch { $width = 120 }
+    return [Math]::Min(150, [Math]::Max(88, $width))
+}
+
+function Get-ClippedText {
+    param([AllowNull()][string]$Text, [Parameter(Mandatory)][int]$Width)
+    $singleLine = (($Text ?? '') -replace '[\r\n]+', ' ').Trim()
+    if ($singleLine.Length -le $Width) { return $singleLine }
+    if ($Width -le 1) { return $singleLine.Substring(0, $Width) }
+    return $singleLine.Substring(0, $Width - 1) + '…'
+}
+
+function Write-DeskLine {
+    param([Parameter(Mandatory)][string]$Text, [Parameter(Mandatory)][int]$Width)
+    Write-Host ('| ' + (Get-ClippedText -Text $Text -Width ($Width - 4)).PadRight($Width - 4) + ' |')
+}
+
+function Write-DeskBorder {
+    param([Parameter(Mandatory)][int]$Width)
+    Write-Host ('+' + ('-' * ($Width - 2)) + '+')
+}
+
 function Show-MailList {
     param([Parameter(Mandatory)]$Result)
     $script:VisibleMessages = @($Result.emails)
     if ($script:VisibleMessages.Count -eq 0) { Write-Host 'No messages found.'; return }
-    $rows = for ($index = 0; $index -lt $script:VisibleMessages.Count; $index++) {
+    $width = Get-DeskWidth
+    $senderWidth = [Math]::Min(38, [Math]::Max(26, [int]($width * 0.30)))
+    $subjectWidth = $width - $senderWidth - 35
+    $rowRule = '+' + ('-' * 4) + '+' + ('-' * 3) + '+' + ('-' * ($senderWidth + 2)) + '+' + ('-' * ($subjectWidth + 2)) + '+' + ('-' * 14) + '+' + ('-' * 3) + '+'
+    $rowFormat = '| {0,2} | {1,-1} | {2,-' + $senderWidth + '} | {3,-' + $subjectWidth + '} | {4,-12} | {5,-1} |'
+
+    Write-DeskBorder -Width $width
+    Write-DeskLine -Width $width -Text ("PROTON MAIL DESK    {0}  ·  {1} shown of {2}" -f $Result.folder.ToUpperInvariant(), $script:VisibleMessages.Count, $Result.total)
+    Write-DeskLine -Width $width -Text 'Choose a numbered message to read or organise it. * means unread; @ means attachment.'
+    Write-DeskBorder -Width $width
+    Write-Host $rowRule
+    Write-Host ($rowFormat -f '#', '*', 'FROM', 'SUBJECT', 'RECEIVED', '@')
+    Write-Host $rowRule
+    for ($index = 0; $index -lt $script:VisibleMessages.Count; $index++) {
         $message = $script:VisibleMessages[$index]
-        [pscustomobject]@{
-            '#' = $index + 1
-            New = if ($message.isRead) { '' } else { '*' }
-            From = (Get-AddressText $message.from)
-            Subject = $message.subject
-            When = ([datetimeoffset]$message.date).ToLocalTime().ToString('ddd HH:mm')
-            Attachments = if ($message.hasAttachments) { 'yes' } else { '' }
-        }
+        $sender = Get-ClippedText -Text (Get-AddressText $message.from) -Width $senderWidth
+        $subject = Get-ClippedText -Text $message.subject -Width $subjectWidth
+        $received = ([datetimeoffset]$message.date).ToLocalTime().ToString('dd MMM HH:mm')
+        Write-Host ($rowFormat -f ($index + 1), $(if ($message.isRead) { '' } else { '*' }), $sender, $subject, $received, $(if ($message.hasAttachments) { '@' } else { '' }))
     }
-    $rows | Format-Table -AutoSize | Out-Host
-    Write-Host ("Showing {0} of {1} messages in {2}. * = unread." -f $script:VisibleMessages.Count, $Result.total, $Result.folder)
+    Write-Host $rowRule
 }
 
 function Select-Message {
@@ -88,13 +119,15 @@ function Search-Mail {
 }
 
 $script:VisibleMessages = @()
-Write-Host 'Proton Mail Desk — local Bridge mailbox assistant'
-Write-Host 'Read/search operations do not change messages. Archive and Trash always ask first; sending requires a second confirmation.'
 if (-not $NoInitialRefresh) { Refresh-Inbox }
 
 while ($true) {
+    $width = Get-DeskWidth
     Write-Host ''
-    Write-Host '[I]nbox  [S]earch  [R]ead  [A]rchive  [T]rash  [M]ark read  [C]ompose  [Q]uit'
+    Write-DeskBorder -Width $width
+    Write-DeskLine -Width $width -Text '[I] Inbox   [S] Search   [R] Read   [A] Archive   [T] Trash'
+    Write-DeskLine -Width $width -Text '[M] Mark read   [C] Compose   [Q] Quit'
+    Write-DeskBorder -Width $width
     $selection = Read-Host 'Choose'
     if ($null -eq $selection) { return }
     switch ($selection.Trim().ToUpperInvariant()) {
