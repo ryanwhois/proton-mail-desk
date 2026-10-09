@@ -45,7 +45,7 @@ Pass `-ReadOnly` at setup time if a read-only profile is needed. To change the p
 .\scripts\Invoke-ProtonMail.ps1 -ConfirmDestructive send --to recipient@example.com --subject 'Subject' --body 'Message'
 ```
 
-`trash`, `archive`, `move`, labels, and folders are ordinary mailbox changes. Sending, permanent delete, and generic `tool` calls need `-ConfirmDestructive`; the upstream client also retains its `confirmed:true` requirement where applicable.
+`trash`, `archive`, `move`, labels, and folders are ordinary mailbox changes. Sending and permanent deletion need `-ConfirmDestructive`; the wrapper forwards that confirmation to the upstream CLI's dedicated commands. Generic `tool` calls still need their own `confirmed:true` in their JSON arguments, because those arguments are passed through untouched.
 
 ## MCP server
 
@@ -64,4 +64,4 @@ npm.cmd run check:powershell
 npm.cmd run doctor
 ```
 
-The project deliberately has no automatic sends, deletes, or background daemon. Use explicit commands and keep Proton Bridge signed in locally.
+The project deliberately has no automatic sends, deletes, or background mailbox scan. Use explicit commands (including `sync` when you want to refresh the local index) and keep Proton Bridge signed in locally.

@@ -112,6 +112,11 @@ function Invoke-WithProtonEnvironment {
             PROTONMAIL_CONFIRM_DESTRUCTIVE = ([bool]$profile.ConfirmDestructive).ToString().ToLowerInvariant()
             PROTONMAIL_TOOL_TIER = 'full'
             PROTONMAIL_ALLOW_REMOTE_DRAFT_SYNC = 'true'
+            # Keep background index activity opt-in. A user can run `sync` when wanted;
+            # this avoids a long mailbox scan and noisy stale-lock recovery on MCP startup.
+            PROTONMAIL_STARTUP_SYNC = 'false'
+            PROTONMAIL_AUTO_SYNC = 'false'
+            PROTONMAIL_IDLE_WATCH = 'false'
             PROTONMAIL_DATA_DIR = $script:DataDirectory
         }
         foreach ($key in $values.Keys) { $old[$key] = [Environment]::GetEnvironmentVariable($key, 'Process'); [Environment]::SetEnvironmentVariable($key, $values[$key], 'Process') }
