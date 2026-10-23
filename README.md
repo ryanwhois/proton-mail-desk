@@ -40,6 +40,9 @@ npm.cmd run inbox:proposals
 # Generate a local, editable decision worksheet containing current message headers
 npm.cmd run inbox:worksheet
 
+# Show the exact approved newsletter batch without changing mail
+npm.cmd run inbox:apply-approved
+
 # Inspect health and live connectivity
 .\scripts\Invoke-ProtonMail.ps1 doctor --json
 .\scripts\Invoke-ProtonMail.ps1 connection-status --json
@@ -62,6 +65,8 @@ npm.cmd run inbox:worksheet
 `Get-ProtonMailActionProposals.ps1` evaluates the explicit policy in `config/mail-policy.psd1` against those same read-only headers. It proposes, but never applies, state labels and archive actions. `Action`, `Waiting`, and `Read Later` recommendations mean label **then archive**, preserving Inbox as the unprocessed queue. The initial policy covers Financial Times and Eater edition retention, plus conservative manual handling for GitHub, Revolut, financial/official mail, health/legal/debt messages, delivery/booking, invoices, and mail from people. Messages without a clearly approved rule remain out of the proposal list.
 
 `New-ProtonMailDecisionWorksheet.ps1` creates an editable Markdown worksheet beneath `.local/reports/`. It contains current message-header metadata, suggested/default disposition codes, and a blank response column. The generated file is Git-ignored and includes no message bodies; it does not change mail.
+
+`Invoke-ProtonMailApprovedBatch.ps1` is the only current apply command. It rebuilds the live proposal set and refuses anything except the approved Financial Times/Eater newsletter actions. Run it without switches to inspect the exact batch. Applying it requires `-ConfirmApply`; it adds `Read Later` to the four newest editions, archives them, archives the older editions, and records a local Git-ignored audit. It stops at the first failure rather than continuing a partial batch.
 
 ## MCP server
 

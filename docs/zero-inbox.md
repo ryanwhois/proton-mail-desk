@@ -41,3 +41,17 @@ The initial policy is deliberately narrow:
 - GitHub access/security mail remains manual. Build, deployment, and error notifications are shown as potential `Action` items; other non-security notifications need a message-level decision before a default is added.
 - Revolut promotions are shown as potential `Read Later` items. Account, payment, and card messages remain unread and are individually reviewed before they are starred.
 - Propstep, deliveries, bookings, receipts, invoices, health, government, legal, debt, and direct-person/work mail are never batch-handled by this policy. The report will surface specific examples so their folder and label rules can be agreed safely.
+
+## Applying an approved batch
+
+The current apply command is intentionally limited to the reviewed Financial Times and Eater newsletter rule. It rebuilds the live read-only proposal immediately before taking action and rejects any sender, rule, or action outside that scope.
+
+```powershell
+# Preview the exact current batch; makes no changes.
+npm.cmd run inbox:apply-approved
+
+# Apply only after a reviewed batch has explicit approval.
+.\scripts\Invoke-ProtonMailApprovedBatch.ps1 -ConfirmApply
+```
+
+The command adds `Read Later` then archives each current edition, archives older editions, and saves a local audit under `.local/reports/`. It stops if any operation fails; inspect that audit before considering a retry.
