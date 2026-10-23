@@ -8,9 +8,9 @@ The current workflow uses exactly three labels:
 
 | Label | Meaning | Next step |
 | --- | --- | --- |
-| `Action` | You need to do something. | Create or complete the task, then archive the message. |
-| `Waiting` | Another person or service owes the next step. | Review the label periodically; archive the message after the outcome is settled. |
-| `Read Later` | Worth reading, but not now. | Read during a deliberate reading block, then archive. |
+| `Action` | You need to do something. | Apply the label, then archive; the label is the follow-up queue. |
+| `Waiting` | Another person or service owes the next step. | Apply the label, then archive; periodically review the label. |
+| `Read Later` | Worth reading, but not now. | Apply the label, then archive; read it from the label queue. |
 
 Labels are a state, not a subject. Use folders only for durable reference categories such as invoices, healthcare, work material, or long-lived projects.
 
@@ -18,8 +18,8 @@ Labels are a state, not a subject. Use folders only for durable reference catego
 
 1. Delete or unsubscribe when it has no value.
 2. Do a sub-two-minute task immediately, then archive.
-3. Add `Action`, `Waiting`, or `Read Later` when applicable.
-4. Archive, move to a reference folder, or trash the message once there is no further Inbox decision.
+3. Add `Action`, `Waiting`, or `Read Later` when applicable, then archive so the state label—not Inbox—holds the deferred item.
+4. Mark read only as part of a final outcome: normally archive, move to a reference folder, or trash once there is no further Inbox decision. Do not use “mark read” alone as a workflow state.
 
 The Mail Desk's **Label** action adds one of the three workflow labels but does not move the message. That separation keeps a choice reversible and makes the next action explicit.
 
@@ -33,11 +33,11 @@ The Mail Desk's **Label** action adds one of the three workflow labels but does 
 
 ## Proposal-only policy
 
-`npm.cmd run inbox:proposals` applies the agreed policy as a read-only recommendation engine. It has no apply mode: every result is a reviewable proposed action, and no message is changed by the command.
+`npm.cmd run inbox:proposals` applies the agreed policy as a read-only recommendation engine. It has no apply mode: every result is a reviewable proposed action, and no message is changed by the command. `npm.cmd run inbox:worksheet` writes the current manual decisions, including header metadata, to a local editable Markdown file under `.local/reports/`.
 
 The initial policy is deliberately narrow:
 
-- Financial Times and Eater: the newest edition is proposed for `Read Later`; older editions are proposed for archive. The report retains an occasional unsubscribe reminder.
+- Financial Times and Eater: the newest edition is proposed for `Read Later` **then archive**; older editions are proposed for archive. The report retains an occasional unsubscribe reminder.
 - GitHub access/security mail remains manual. Build, deployment, and error notifications are shown as potential `Action` items; other non-security notifications need a message-level decision before a default is added.
 - Revolut promotions are shown as potential `Read Later` items. Account, payment, and card messages remain unread and are individually reviewed before they are starred.
 - Propstep, deliveries, bookings, receipts, invoices, health, government, legal, debt, and direct-person/work mail are never batch-handled by this policy. The report will surface specific examples so their folder and label rules can be agreed safely.

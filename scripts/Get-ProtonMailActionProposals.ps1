@@ -47,6 +47,9 @@ function New-Proposal {
         Date = $Message.Date
         Sender = $Message.Sender
         Subject = $Message.Subject
+        IsRead = [bool]$Message.IsRead
+        IsStarred = [bool]$Message.IsStarred
+        HasAttachments = [bool]$Message.HasAttachments
         Rule = $Rule
         SuggestedAction = $SuggestedAction
         NeedsReview = $NeedsReview
@@ -81,7 +84,7 @@ foreach ($senderGroup in ($messages | Group-Object Sender)) {
 
         if ($policy.NewsletterSenders -contains $sender) {
             if ($index -eq 0) {
-                $proposals.Add((New-Proposal -Message $message -Rule 'Newsletter retention' -SuggestedAction 'Add Labels/Read Later; retain in Inbox' -NeedsReview $false -Notes 'Newest edition for this sender.'))
+                $proposals.Add((New-Proposal -Message $message -Rule 'Newsletter retention' -SuggestedAction 'Add Labels/Read Later, then archive' -NeedsReview $false -Notes 'Newest edition for this sender.'))
             } else {
                 $proposals.Add((New-Proposal -Message $message -Rule 'Newsletter retention' -SuggestedAction 'Archive' -NeedsReview $false -Notes 'Older edition for this sender; ask about unsubscribe occasionally.'))
             }
@@ -92,9 +95,9 @@ foreach ($senderGroup in ($messages | Group-Object Sender)) {
             if (Test-AnyPattern -Text $subject -Patterns $policy.GitHubSecurityPatterns) {
                 $proposals.Add((New-Proposal -Message $message -Rule 'GitHub security/access' -SuggestedAction 'Leave unread; manual review only' -NeedsReview $true -Notes 'Never batch-change account or access notices.'))
             } elseif (Test-AnyPattern -Text $subject -Patterns $policy.GitHubActionPatterns) {
-                $proposals.Add((New-Proposal -Message $message -Rule 'GitHub build/deployment/error' -SuggestedAction 'Consider Labels/Action; retain in Inbox' -NeedsReview $true -Notes 'User requested a conservative review before choosing Action.'))
+                $proposals.Add((New-Proposal -Message $message -Rule 'GitHub build/deployment/error' -SuggestedAction 'Consider Labels/Action, then archive' -NeedsReview $true -Notes 'User requested a conservative review before choosing Action.'))
             } else {
-                $proposals.Add((New-Proposal -Message $message -Rule 'GitHub non-security notification' -SuggestedAction 'Review: mark read, then choose Action, Read Later, or Archive' -NeedsReview $true -Notes 'No default folder or label has been approved.'))
+                $proposals.Add((New-Proposal -Message $message -Rule 'GitHub non-security notification' -SuggestedAction 'Review, then choose Action, Read Later, or Archive' -NeedsReview $true -Notes 'No default folder or label has been approved.'))
             }
             continue
         }
@@ -103,7 +106,7 @@ foreach ($senderGroup in ($messages | Group-Object Sender)) {
             if (Test-AnyPattern -Text $subject -Patterns $policy.RevolutAccountPatterns) {
                 $proposals.Add((New-Proposal -Message $message -Rule 'Revolut account/payment/card' -SuggestedAction 'Leave unread; star after individual review' -NeedsReview $true -Notes 'No batch change for financial/account mail.'))
             } elseif (Test-AnyPattern -Text $subject -Patterns $policy.RevolutPromotionPatterns) {
-                $proposals.Add((New-Proposal -Message $message -Rule 'Revolut promotion' -SuggestedAction 'Add Labels/Read Later; retain in Inbox' -NeedsReview $true -Notes 'Confirm the message is promotional before applying the label.'))
+                $proposals.Add((New-Proposal -Message $message -Rule 'Revolut promotion' -SuggestedAction 'Add Labels/Read Later, then archive' -NeedsReview $true -Notes 'Confirm the message is promotional before applying the label.'))
             } else {
                 $proposals.Add((New-Proposal -Message $message -Rule 'Revolut unclassified' -SuggestedAction 'Manual review only' -NeedsReview $true -Notes 'Neither promotional nor transactional pattern matched safely.'))
             }

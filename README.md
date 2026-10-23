@@ -37,6 +37,9 @@ npm.cmd run inbox:triage
 # Apply the approved policy in proposal mode only (makes no mailbox changes)
 npm.cmd run inbox:proposals
 
+# Generate a local, editable decision worksheet containing current message headers
+npm.cmd run inbox:worksheet
+
 # Inspect health and live connectivity
 .\scripts\Invoke-ProtonMail.ps1 doctor --json
 .\scripts\Invoke-ProtonMail.ps1 connection-status --json
@@ -56,7 +59,9 @@ npm.cmd run inbox:proposals
 
 `Get-ProtonInboxTriage.ps1` is deliberately read-only. It pages through enough Inbox headers to cover its date window, groups them by sender, and highlights messages whose metadata indicates security/account, official/financial, work/calendar, or delivery/order review. Use it to form a reviewed batch; it never archives, labels, moves, trashes, marks read, or opens message content.
 
-`Get-ProtonMailActionProposals.ps1` evaluates the explicit policy in `config/mail-policy.psd1` against those same read-only headers. It proposes, but never applies, state labels and archive actions. The initial policy covers Financial Times and Eater edition retention, plus conservative manual handling for GitHub, Revolut, financial/official mail, health/legal/debt messages, delivery/booking, invoices, and mail from people. Messages without a clearly approved rule remain out of the proposal list.
+`Get-ProtonMailActionProposals.ps1` evaluates the explicit policy in `config/mail-policy.psd1` against those same read-only headers. It proposes, but never applies, state labels and archive actions. `Action`, `Waiting`, and `Read Later` recommendations mean label **then archive**, preserving Inbox as the unprocessed queue. The initial policy covers Financial Times and Eater edition retention, plus conservative manual handling for GitHub, Revolut, financial/official mail, health/legal/debt messages, delivery/booking, invoices, and mail from people. Messages without a clearly approved rule remain out of the proposal list.
+
+`New-ProtonMailDecisionWorksheet.ps1` creates an editable Markdown worksheet beneath `.local/reports/`. It contains current message-header metadata, suggested/default disposition codes, and a blank response column. The generated file is Git-ignored and includes no message bodies; it does not change mail.
 
 ## MCP server
 

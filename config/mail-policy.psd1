@@ -1,7 +1,7 @@
 @{
     # This policy contains only user-approved suggestions. The accompanying
     # proposal command is read-only and does not apply any listed action.
-    Version = 1
+    Version = 2
 
     NewsletterSenders = @(
         'myFT',

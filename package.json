@@ -15,6 +15,7 @@
     "inbox": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonMail.ps1",
     "inbox:triage": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonInboxTriage.ps1",
     "inbox:proposals": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonMailActionProposals.ps1",
+    "inbox:worksheet": "pwsh -NoLogo -NoProfile -File scripts/New-ProtonMailDecisionWorksheet.ps1",
     "desk": "pwsh -NoLogo -NoProfile -File scripts/Start-ProtonMailDesk.ps1",
     "mcp": "pwsh -NoLogo -NoProfile -File scripts/Start-ProtonMcp.ps1"
   }
