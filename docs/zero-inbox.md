@@ -30,3 +30,14 @@ The Mail Desk's **Label** action adds one of the three workflow labels but does 
 3. Process the most recent 7–14 days of the Inbox manually; do not begin with the historic backlog. Do not bulk-archive a sender group until it has been sampled and any review-flagged messages are excluded.
 4. Review the old, empty workflow labels only after the new names are established. Do not alter `Axis` without a separate inventory and review because it is a large historic classification.
 5. Process older mail in previewed batches by sender, subject, or age. Never bulk-move or bulk-label a set without reviewing a representative sample and its count first.
+
+## Proposal-only policy
+
+`npm.cmd run inbox:proposals` applies the agreed policy as a read-only recommendation engine. It has no apply mode: every result is a reviewable proposed action, and no message is changed by the command.
+
+The initial policy is deliberately narrow:
+
+- Financial Times and Eater: the newest edition is proposed for `Read Later`; older editions are proposed for archive. The report retains an occasional unsubscribe reminder.
+- GitHub access/security mail remains manual. Build, deployment, and error notifications are shown as potential `Action` items; other non-security notifications need a message-level decision before a default is added.
+- Revolut promotions are shown as potential `Read Later` items. Account, payment, and card messages remain unread and are individually reviewed before they are starred.
+- Propstep, deliveries, bookings, receipts, invoices, health, government, legal, debt, and direct-person/work mail are never batch-handled by this policy. The report will surface specific examples so their folder and label rules can be agreed safely.

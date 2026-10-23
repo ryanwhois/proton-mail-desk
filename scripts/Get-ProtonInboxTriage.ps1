@@ -4,6 +4,7 @@ param(
     [ValidateRange(1, 60)][int]$Days = 14,
     [ValidateRange(50, 100)][int]$PageSize = 100,
     [ValidateRange(100, 5000)][int]$MaxMessages = 1000,
+    [switch]$IncludeMessages,
     [switch]$Json
 )
 
@@ -65,6 +66,35 @@ function Get-MessageSender {
     }
 
     return '(no sender name)'
+}
+
+function Get-MessageAddress {
+    param([Parameter(Mandatory)]$Message)
+
+    $fromProperty = $Message.PSObject.Properties['from']
+    if ($null -eq $fromProperty) { return $null }
+
+    $firstSender = @($fromProperty.Value | Select-Object -First 1)[0]
+    if ($null -eq $firstSender) { return $null }
+
+    $addressProperty = $firstSender.PSObject.Properties['address']
+    if ($null -eq $addressProperty) { return $null }
+    return [string]$addressProperty.Value
+}
+
+function ConvertTo-TriageHeader {
+    param([Parameter(Mandatory)]$Message)
+
+    return [pscustomobject]@{
+        EmailId = [string]$Message.id
+        Date = ([datetime]$Message.date).ToString('o')
+        Sender = Get-MessageSender -Message $Message
+        SenderAddress = Get-MessageAddress -Message $Message
+        Subject = [string]$Message.subject
+        IsRead = [bool]$Message.isRead
+        IsStarred = [bool]$Message.isStarred
+        HasAttachments = [bool]$Message.hasAttachments
+    }
 }
 
 $cutoff = (Get-Date).Date.AddDays(-$Days)
@@ -138,6 +168,7 @@ $result = [pscustomobject]@{
     SenderCount = $senderSummary.Count
     Senders = $senderSummary
     ReviewItems = $reviewItems
+    Headers = if ($IncludeMessages) { @($messages | ForEach-Object { ConvertTo-TriageHeader -Message $_ }) } else { @() }
 }
 
 if ($Json) {

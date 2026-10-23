@@ -14,6 +14,7 @@
     "doctor": "pwsh -NoLogo -NoProfile -File scripts/Invoke-ProtonMail.ps1 doctor --json",
     "inbox": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonMail.ps1",
     "inbox:triage": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonInboxTriage.ps1",
+    "inbox:proposals": "pwsh -NoLogo -NoProfile -File scripts/Get-ProtonMailActionProposals.ps1",
     "desk": "pwsh -NoLogo -NoProfile -File scripts/Start-ProtonMailDesk.ps1",
     "mcp": "pwsh -NoLogo -NoProfile -File scripts/Start-ProtonMcp.ps1"
   }

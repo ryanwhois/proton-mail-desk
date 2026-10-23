@@ -34,6 +34,9 @@ Pass `-ReadOnly` at setup time if a read-only profile is needed. To change the p
 npm.cmd run inbox:triage
 .\scripts\Get-ProtonInboxTriage.ps1 -Days 14
 
+# Apply the approved policy in proposal mode only (makes no mailbox changes)
+npm.cmd run inbox:proposals
+
 # Inspect health and live connectivity
 .\scripts\Invoke-ProtonMail.ps1 doctor --json
 .\scripts\Invoke-ProtonMail.ps1 connection-status --json
@@ -52,6 +55,8 @@ npm.cmd run inbox:triage
 `trash`, `archive`, `move`, labels, and folders are ordinary mailbox changes. Sending and permanent deletion need `-ConfirmDestructive`; the wrapper forwards that confirmation to the upstream CLI's dedicated commands. Generic `tool` calls still need their own `confirmed:true` in their JSON arguments, because those arguments are passed through untouched.
 
 `Get-ProtonInboxTriage.ps1` is deliberately read-only. It pages through enough Inbox headers to cover its date window, groups them by sender, and highlights messages whose metadata indicates security/account, official/financial, work/calendar, or delivery/order review. Use it to form a reviewed batch; it never archives, labels, moves, trashes, marks read, or opens message content.
+
+`Get-ProtonMailActionProposals.ps1` evaluates the explicit policy in `config/mail-policy.psd1` against those same read-only headers. It proposes, but never applies, state labels and archive actions. The initial policy covers Financial Times and Eater edition retention, plus conservative manual handling for GitHub, Revolut, financial/official mail, health/legal/debt messages, delivery/booking, invoices, and mail from people. Messages without a clearly approved rule remain out of the proposal list.
 
 ## MCP server
 
