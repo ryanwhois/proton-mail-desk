@@ -26,6 +26,7 @@ The Mail Desk's **Label** action adds one of the three workflow labels but does 
 ## Adoption plan
 
 1. Use the three labels only for new mail for one to two weeks.
-2. Process the most recent 7–14 days of the Inbox manually; do not begin with the historic backlog.
-3. Review the old, empty workflow labels only after the new names are established. Do not alter `Axis` without a separate inventory and review because it is a large historic classification.
-4. Process older mail in previewed batches by sender, subject, or age. Never bulk-move or bulk-label a set without reviewing a representative sample and its count first.
+2. Start each recent-window session with `npm.cmd run inbox:triage`. It is a read-only header inventory that groups recent messages by sender and flags security, financial/official, work/calendar, and delivery/order metadata for individual review.
+3. Process the most recent 7–14 days of the Inbox manually; do not begin with the historic backlog. Do not bulk-archive a sender group until it has been sampled and any review-flagged messages are excluded.
+4. Review the old, empty workflow labels only after the new names are established. Do not alter `Axis` without a separate inventory and review because it is a large historic classification.
+5. Process older mail in previewed batches by sender, subject, or age. Never bulk-move or bulk-label a set without reviewing a representative sample and its count first.

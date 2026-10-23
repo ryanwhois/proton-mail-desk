@@ -30,6 +30,10 @@ Pass `-ReadOnly` at setup time if a read-only profile is needed. To change the p
 # Recent Inbox messages
 .\scripts\Get-ProtonMail.ps1 -Limit 25
 
+# Read-only Zero Inbox triage for the recent Inbox window
+npm.cmd run inbox:triage
+.\scripts\Get-ProtonInboxTriage.ps1 -Days 14
+
 # Inspect health and live connectivity
 .\scripts\Invoke-ProtonMail.ps1 doctor --json
 .\scripts\Invoke-ProtonMail.ps1 connection-status --json
@@ -46,6 +50,8 @@ Pass `-ReadOnly` at setup time if a read-only profile is needed. To change the p
 ```
 
 `trash`, `archive`, `move`, labels, and folders are ordinary mailbox changes. Sending and permanent deletion need `-ConfirmDestructive`; the wrapper forwards that confirmation to the upstream CLI's dedicated commands. Generic `tool` calls still need their own `confirmed:true` in their JSON arguments, because those arguments are passed through untouched.
+
+`Get-ProtonInboxTriage.ps1` is deliberately read-only. It pages through enough Inbox headers to cover its date window, groups them by sender, and highlights messages whose metadata indicates security/account, official/financial, work/calendar, or delivery/order review. Use it to form a reviewed batch; it never archives, labels, moves, trashes, marks read, or opens message content.
 
 ## MCP server
 
