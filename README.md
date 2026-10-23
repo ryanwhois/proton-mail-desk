@@ -65,7 +65,9 @@ For a more approachable view than raw command output, launch the local terminal 
 npm.cmd run desk
 ```
 
-It starts with a compact, numbered Inbox list and offers guided Inbox refresh, live search, message reading, archive, trash, mark-read, and compose actions. Reading and searching do not change any message. Archive and Trash ask for confirmation; sending asks for confirmation and uses the same irreversible-action safeguards as the command-line wrapper.
+It starts with a compact, numbered Inbox list and offers guided Inbox refresh, live search, message reading, workflow labels, archive, trash, mark-read, and compose actions. **Label** offers the Zero Inbox states `Action`, `Waiting`, and `Read Later` and always asks for confirmation. Reading and searching do not change any message. Archive and Trash ask for confirmation; sending asks for confirmation and uses the same irreversible-action safeguards as the command-line wrapper.
+
+See [the Zero Inbox workflow](docs/zero-inbox.md) for the daily processing rule and the staged migration plan.
 
 For one-click use, double-click `Launch Proton Mail Desk.cmd` in the repository root. To create a Desktop shortcut that you can pin, run this once:
 

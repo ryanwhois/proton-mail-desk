@@ -118,6 +118,28 @@ function Search-Mail {
     Show-MailList -Result $result
 }
 
+function Add-WorkflowLabel {
+    $message = Select-Message -Prompt 'Message number to label'
+    if (-not $message) { return }
+
+    Write-Host 'Choose a workflow state: [A] Action   [W] Waiting   [R] Read Later   [X] Cancel'
+    $choice = Read-Host 'Label'
+    if ($null -eq $choice) { return }
+    $label = switch ($choice.Trim().ToUpperInvariant()) {
+        'A' { 'Action' }
+        'W' { 'Waiting' }
+        'R' { 'Read Later' }
+        'X' { return }
+        default { Write-Host 'Choose A, W, R, or X.'; return }
+    }
+
+    if (-not (Confirm-Action "Add '$label' to '$($message.subject)'")) { return }
+    $toolArguments = @{ labelsToAdd = @("Labels/$label") } | ConvertTo-Json -Compress
+    Invoke-BridgeJson -Arguments @('update-message-labels', $message.id, '--args', $toolArguments, '--json') | Out-Null
+    Write-Host "Added '$label'. The message remains in its current folder until you archive, move, or trash it."
+    Refresh-Inbox
+}
+
 $script:VisibleMessages = @()
 if (-not $NoInitialRefresh) { Refresh-Inbox }
 
@@ -125,7 +147,7 @@ while ($true) {
     $width = Get-DeskWidth
     Write-Host ''
     Write-DeskBorder -Width $width
-    Write-DeskLine -Width $width -Text '[I] Inbox   [S] Search   [R] Read   [A] Archive   [T] Trash'
+    Write-DeskLine -Width $width -Text '[I] Inbox   [S] Search   [R] Read   [L] Label   [A] Archive   [T] Trash'
     Write-DeskLine -Width $width -Text '[M] Mark read   [C] Compose   [Q] Quit'
     Write-DeskBorder -Width $width
     $selection = Read-Host 'Choose'
@@ -134,6 +156,7 @@ while ($true) {
         'I' { Refresh-Inbox }
         'S' { Search-Mail }
         'R' { $message = Select-Message; if ($message) { Show-Message -Message $message } }
+        'L' { Add-WorkflowLabel }
         'A' {
             $message = Select-Message
             if ($message -and (Confirm-Action "Archive '$($message.subject)'")) {
@@ -167,6 +190,6 @@ while ($true) {
             }
         }
         'Q' { return }
-        default { Write-Host 'Choose I, S, R, A, T, M, C, or Q.' }
+        default { Write-Host 'Choose I, S, R, L, A, T, M, C, or Q.' }
     }
 }
